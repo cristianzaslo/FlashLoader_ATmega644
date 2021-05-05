@@ -1,4 +1,5 @@
-***** Flashloader for ATMEAGA 644 microcontroller *****
+#***** Flashloader for ATMEAGA 644 microcontroller *****
+# (c)2021 Cristian Zaslo, cristianzaslo@gmail.com
 
 Development toolchain:
 ---------------------
@@ -11,7 +12,7 @@ Programming toolchain:
 -> serial programmer to write the flashloader
 -> RS232-TTL converter (e.g. http://picprojects.org.uk/projects/simpleSIO/ssio.htm)
 -> Windows 7/10 environment
--> FlashTool_AT644 or a equivalent programming tool to write the main application
+-> FlashTool_AT644 or an equivalent programming tool to write the main application
 
 Installation:
 ------------
@@ -20,14 +21,14 @@ Installation:
 -> connect PDO (RXD0), PD1 (TXD0) and GND pins to RS232-TTL converter
 -> connect RS232-TTL converter to host PC
 -> run FlashTool_AT644 application and select the *.hex file application to download
--> reset the the target; an 0x55 char will be sent by target and upon reception the download sequence is automatically started
+-> reset the target; an 0x55 char will be sent by target and upon reception the download sequence is automatically started
 
 Data exchange sequence diagram:
-----------------------
+------------------------------
 
 TARGET (AVR)           HOST (PC)
 
-                       Init
+-                      Init
 Reset
 0x55           ->      Read
 Read           <-      0x55, Cheksum_Low, Checksum_High  
