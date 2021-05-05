@@ -1,0 +1,154 @@
+##############################################################################
+#                                                                            #
+# IAR Atmel AVR C/EC++ Compiler V2.28A/WIN             05/May/2021  11:04:54 #
+# Copyright 1996-2002 IAR Systems. All rights reserved.                      #
+#                                                                            #
+#    Source file  =  D:\Projects\FlashLoader_AT644\Source\Io.c               #
+#    Command line =  D:\Projects\FlashLoader_AT644\Source\Io.c               #
+#                    -IC:\IARSystems\avr\inc\ -ID:\Projects\FlashLoader_AT64 #
+#                    4\Source\ -lA D:\Projects\FlashLoader_AT644\Out\ -lC    #
+#                    D:\Projects\FlashLoader_AT644\Out\ -o                   #
+#                    D:\Projects\FlashLoader_AT644\Out\ -e -s3 --cpu=m16     #
+#                    --memory_model=small --eeprom_size=2048                 #
+#                    --initializers_in_flash                                 #
+#    List file    =  D:\Projects\FlashLoader_AT644\Out\Io.lst                #
+#    Object file  =  D:\Projects\FlashLoader_AT644\Out\Io.r90                #
+#                                                                            #
+#                                                                            #
+##############################################################################
+
+      1          /*~-1*/
+      2          /*~XSF_LANGUAGE: C/C++*/
+      3          /*~A:1*/
+      4          /*~+:Header*/
+      5          /*~T*/
+      6          /* SOURCE FILE    <Io.c>
+      7          
+      8           **************************************************************************
+      9           *  PROJECT       <FlashLoader_AT644>
+     10           *  MODULE        <Io>
+     11           *  RESPONSIBLE   <Cristian Zaslo>
+     12           **************************************************************************
+     13           *  PURPOSE:      IO driver
+     14           *
+     15           *
+     16           *
+     17           **************************************************************************
+     18           *  REMARKS:
+     19           *  ATMEGA 644 compliant
+     20           *
+     21           **************************************************************************
+     22           *  CHANGE HISTORY:
+     23           *  Log of all revisions so far:
+     24           *
+     25           *  Rev 1.0   Mar 01 2021    CrZa
+     26           *  Initial revision.
+     27           *
+     28           *************************************************************************/
+     29          
+     30          
+     31          
+     32          /*~E:A1*/
+     33          /*~A:2*/
+     34          /*~+:Includes*/
+     35          /*~T*/
+     36          /* included files */
+     37          #include <iom644.h>
+
+   \                                 In segment ABSOLUTE, at 0x2a
+   \   union <unnamed> volatile __io _A_DDRD;
+   \                     _A_DDRD:
+   \   00000000                              DS 1
+
+   \                                 In segment ABSOLUTE, at 0x2b
+   \   union <unnamed> volatile __io _A_PORTD;
+   \                     _A_PORTD:
+   \   00000000                              DS 1
+
+   \                                 In segment ABSOLUTE, at 0x55
+   \   union <unnamed> volatile __io _A_MCUCR;
+   \                     _A_MCUCR:
+   \   00000000                              DS 1
+     38          #include "Global.h"
+     39          #include "Io.h"    
+     40          /*~E:A2*/
+     41          /*~A:3*/
+     42          /*~+:Types*/
+     43          /*~T*/
+     44          
+     45          /*~E:A3*/
+     46          /*~A:4*/
+     47          /*~+:Constants*/
+     48          /*~T*/
+     49          
+     50          /*~E:A4*/
+     51          /*~A:5*/
+     52          /*~+:Variables*/
+     53          /*~T*/
+     54          
+     55          /*~E:A5*/
+     56          /*~A:6*/
+     57          /*~+:Macros*/
+     58          /*~T*/
+     59          
+     60          /*~E:A6*/
+     61          /*~A:7*/
+     62          /*~+:Flags / Bit Masks*/
+     63          /*~T*/
+     64          
+     65          /*~E:A7*/
+     66          /*~A:8*/
+     67          /*~+:Function prototypes*/
+     68          /*~T*/
+     69          
+     70          /*~E:A8*/
+     71          /*~K*/
+     72          /*~+:-----   SPECIFIC USER DEFINED FUNCTIONS   -----*/
+     73          /*~A:9*/
+     74          /*~+:void IO_v_Init (void)*/
+     75          /*~F:10*/
+     76          /* module initialization */
+
+   \                                 In segment CODE, align 2, keep-with-next
+     77          void IO_v_Init (void)
+     78          /*~-1*/
+     79          {
+     80             /*~T*/
+     81             /* configure FLI pin */
+     82             IO_v_SET_PIN_DIR (IO_f_PORT_FLI, INPUT);
+   \   __nearfunc void IO_v_Init();
+   \                     IO_v_Init:
+   \   00000000   9852                       CBI     0x0A,0x02
+     83             IO_v_SET_PIN_PUL (IO_f_PORT_FLI);
+   \   00000002   B705                       IN      R16,0x35
+   \   00000004   7E0F                       ANDI    R16,0xEF
+   \   00000006   BF05                       OUT     0x35,R16
+   \   00000008   9A5A                       SBI     0x0B,0x02
+   \   0000000A   9852                       CBI     0x0A,0x02
+     84          
+     85             /* configure toggle pin */
+     86             IO_v_SET_PIN_DIR (IO_f_PORT_TOG, OUTPUT);
+   \   0000000C   9A53                       SBI     0x0A,0x03
+     87             IO_v_SET_PIN_LATCH (IO_f_PORT_TOG, HIGH);
+   \   0000000E   9A5B                       SBI     0x0B,0x03
+     88          /*~-1*/
+     89          }
+   \   00000010   9508                       RET
+     90          /*~E:F10*/
+     91          /*~E:A9*/
+
+   Maximum stack usage in bytes:
+
+     Function   CSTACK  RSTACK
+     --------   ------  ------
+     IO_v_Init      0       0 
+
+ 
+      3 bytes in segment ABSOLUTE
+     18 bytes in segment CODE
+ 
+     18 bytes of CODE memory
+      0 bytes of DATA memory (+ 3 bytes shared)
+
+Errors: none
+Warnings: none

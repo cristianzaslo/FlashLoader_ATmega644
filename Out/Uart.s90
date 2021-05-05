@@ -1,0 +1,928 @@
+        NAME Uart
+
+        RTMODEL "__64bit_doubles", "disabled"
+        RTMODEL "__cpu", "3"
+        RTMODEL "__cpu_name", "AT90Mega16"
+        RTMODEL "__enhanced_core", "enabled"
+        RTMODEL "__has_elpm", "false"
+        RTMODEL "__memory_model", "2"
+        RTMODEL "__rt_version", "2.30"
+
+        RSEG CSTACK:DATA:NOROOT(0)
+        RSEG RSTACK:DATA:NOROOT(0)
+
+
+        PUBLIC UA_f_Rx_Complete
+        FUNCTION UA_f_Rx_Complete,0203H
+        PUBLIC UA_f_Tx_Complete
+        FUNCTION UA_f_Tx_Complete,0203H
+        PUBLIC UA_f_Tx_Empty
+        FUNCTION UA_f_Tx_Empty,0203H
+        PUBLIC UA_ui16_GetChar
+        FUNCTION UA_ui16_GetChar,0203H
+        PUBLIC UA_ui8_GetErrors
+        FUNCTION UA_ui8_GetErrors,0203H
+        PUBLIC UA_v_Clear_Tx_Complete
+        FUNCTION UA_v_Clear_Tx_Complete,0203H
+        PUBLIC UA_v_Disable_Interrupt_Rx
+        FUNCTION UA_v_Disable_Interrupt_Rx,0203H
+        PUBLIC UA_v_Disable_Interrupt_Tx_Complete
+        FUNCTION UA_v_Disable_Interrupt_Tx_Complete,0203H
+        PUBLIC UA_v_Disable_Interrupt_Tx_Empty
+        FUNCTION UA_v_Disable_Interrupt_Tx_Empty,0203H
+        PUBLIC UA_v_Disable_Rx
+        FUNCTION UA_v_Disable_Rx,0203H
+        PUBLIC UA_v_Disable_Tx
+        FUNCTION UA_v_Disable_Tx,0203H
+        PUBLIC UA_v_Enable_Interrupt_Rx
+        FUNCTION UA_v_Enable_Interrupt_Rx,0203H
+        PUBLIC UA_v_Enable_Interrupt_Tx_Complete
+        FUNCTION UA_v_Enable_Interrupt_Tx_Complete,0203H
+        PUBLIC UA_v_Enable_Interrupt_Tx_Empty
+        FUNCTION UA_v_Enable_Interrupt_Tx_Empty,0203H
+        PUBLIC UA_v_Enable_Rx
+        FUNCTION UA_v_Enable_Rx,0203H
+        PUBLIC UA_v_Enable_Tx
+        FUNCTION UA_v_Enable_Tx,0203H
+        PUBLIC UA_v_Init
+        FUNCTION UA_v_Init,021203H
+        LOCFRAME RSTACK, 2, STACK
+        PUBLIC UA_v_MPC_WaitAddress
+        FUNCTION UA_v_MPC_WaitAddress,0203H
+        PUBLIC UA_v_MPC_WaitData
+        FUNCTION UA_v_MPC_WaitData,0203H
+        PUBLIC UA_v_SendChar
+        FUNCTION UA_v_SendChar,0203H
+        PUBLIC UA_v_SetBaudrate
+        FUNCTION UA_v_SetBaudrate,0203H
+        PUBLIC UA_v_SetFrameFormat
+        FUNCTION UA_v_SetFrameFormat,0203H
+        PUBWEAK _A_UBRR0H
+        PUBWEAK _A_UBRR0L
+        PUBWEAK _A_UCSR0A
+        PUBWEAK _A_UCSR0B
+        PUBWEAK _A_UCSR0C
+        PUBWEAK _A_UDR0
+        PUBWEAK __?EEARH
+        PUBWEAK __?EEARL
+        PUBWEAK __?EECR
+        PUBWEAK __?EEDR
+;     1 /*~-1*/
+;     2 /*~XSF_LANGUAGE: C/C++*/
+;     3 /*~A:1*/
+;     4 /*~+:Header*/
+;     5 /*~T*/
+;     6 /* SOURCE FILE    <Uart.c>
+;     7 
+;     8  **************************************************************************
+;     9  *  PROJECT       <FlashLoader_AT644>
+;    10  *  MODULE        <Uart>
+;    11  *  RESPONSIBLE   <Cristian Zaslo>
+;    12  **************************************************************************
+;    13  *  PURPOSE:      UART driver
+;    14  *
+;    15  *
+;    16  **************************************************************************
+;    17  *  REMARKS:
+;    18  *  ATMEGA 644 compliant
+;    19  *
+;    20  **************************************************************************
+;    21  *  CHANGE HISTORY:
+;    22  *  Log of all revisions so far:
+;    23  *
+;    24  *  Rev 1.0   Mar 01 2021    CrZa
+;    25  *  Initial revision.
+;    26  *
+;    27  *************************************************************************/
+;    28 
+;    29 
+;    30 
+;    31 /*~E:A1*/
+;    32 /*~A:2*/
+;    33 /*~+:Includes*/
+;    34 /*~T*/
+;    35 #include <iom644.h>
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c0H
+; union <unnamed> volatile __tiny _A_UCSR0A;
+_A_UCSR0A:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c1H
+; union <unnamed> volatile __tiny _A_UCSR0B;
+_A_UCSR0B:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c2H
+; union <unnamed> volatile __tiny _A_UCSR0C;
+_A_UCSR0C:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c4H
+; union <unnamed> volatile __tiny _A_UBRR0L;
+_A_UBRR0L:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c5H
+; union <unnamed> volatile __tiny _A_UBRR0H;
+_A_UBRR0H:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,0c6H
+; union <unnamed> volatile __tiny _A_UDR0;
+_A_UDR0:
+	DS 1
+;    36 #include "Global.h"
+;    37 #include "Uart.h"
+;    38 
+;    39 /*~E:A2*/
+;    40 /*~A:3*/
+;    41 /*~+:Types*/
+;    42 /*~T*/
+;    43 
+;    44 /*~E:A3*/
+;    45 /*~A:4*/
+;    46 /*~+:Constants*/
+;    47 /*~T*/
+;    48 
+;    49 /*~E:A4*/
+;    50 /*~A:5*/
+;    51 /*~+:Variables*/
+;    52 /*~T*/
+;    53 
+;    54 /*~E:A5*/
+;    55 /*~A:6*/
+;    56 /*~+:Macros*/
+;    57 /*~T*/
+;    58 
+;    59 /*~E:A6*/
+;    60 /*~A:7*/
+;    61 /*~+:Flags / Bit Masks*/
+;    62 /*~T*/
+;    63 
+;    64 /*~E:A7*/
+;    65 /*~A:8*/
+;    66 /*~+:Function prototypes*/
+;    67 /*~T*/
+;    68 
+;    69 /*~E:A8*/
+;    70 /*~A:9*/
+;    71 /*~+:void UA_v_SetBaudrate (const uint16_t ui16_BaudRate)*/
+;    72 /*~F:10*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;    73 void UA_v_SetBaudrate (const uint16_t ui16_BaudRate)
+;    74 /*~-1*/
+;    75 {
+;    76    /*~T*/
+;    77    /* set low speed mode */
+;    78    UCSR0A_Bit1 = FALSE;
+; __nearfunc void UA_v_SetBaudrate(uint16_t const);
+UA_v_SetBaudrate:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R18,Z
+	ANDI	R18,0xFD
+	ST	Z,R18
+;    79 
+;    80    /* set baudrate, clear bits 12-15 of UBRR */
+;    81    UBRR0L = (uint8_t)ui16_BaudRate;
+	MOV	R18,R16
+	STS	_A_UBRR0L,R18
+;    82    UBRR0H = (uint8_t)(ui16_BaudRate >> 8) & (uint8_t)0x0F;
+	MOV	R16,R17
+	LDI	R17,0
+	ANDI	R16,0x0F
+	STS	_A_UBRR0H,R16
+;    83 
+;    84 /*~-1*/
+;    85 }
+	RET
+;    86 /*~E:F10*/
+;    87 /*~E:A9*/
+;    88 /*~A:11*/
+;    89 /*~+:void UA_v_SetFrameFormat (const uint8_t ui8_Mode, const uint8_t ui8_Parity, const uint8_t ui8_StopBits, const uint8_t ui8_CharSize, const uint8_t ui8_ClockPolarity)*/
+;    90 /*~F:12*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;    91 void UA_v_SetFrameFormat (const uint8_t ui8_Mode, const uint8_t ui8_Parity, const uint8_t ui8_StopBits, const uint8_t ui8_CharSize, const uint8_t ui8_ClockPolarity)
+;    92 /*~-1*/
+;    93 {
+;    94    /*~T*/
+;    95    /* temporary */
+;    96    uint8_t ui8_Temp;
+;    97    /*~T*/
+;    98    /* set USART operation mode, parity, stop bits, char size, clock polarity */
+;    99    ui8_Temp  = ui8_Mode | ui8_Parity | ui8_StopBits | (ui8_CharSize & (uint8_t)0x06) | ui8_ClockPolarity;
+; __nearfunc void UA_v_SetFrameFormat(uint8_t const, uint8_t const, uint8_t const, uint8_t const, uint8_t const);
+UA_v_SetFrameFormat:
+	OR	R17,R16
+	OR	R17,R18
+	MOV	R16,R19
+	ANDI	R16,0x06
+	OR	R16,R17
+	OR	R16,R20
+;   100 
+;   101    /* copy value to UCSRC register */
+;   102    UCSR0C = ui8_Temp;
+	STS	_A_UCSR0C,R16
+;   103 
+;   104    /*~I:13*/
+;   105    /* char size is 9 bits ?*/
+;   106    if (ui8_CharSize & 0x08)
+	BST	R19,3
+	BRTC	??UA_v_SetFrameFormat_0
+;   107    /*~-1*/
+;   108    {
+;   109       /*~T*/
+;   110       /* set UCSZ2 */
+;   111       UCSR0B_Bit2 = TRUE;
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x04
+	ST	Z,R16
+	RET
+;   112    /*~-1*/
+;   113    }
+;   114    /*~O:I13*/
+;   115    /*~-2*/
+;   116    else
+;   117    {
+;   118       /*~T*/
+;   119       /* clear UCSZ2 */
+;   120       UCSR0B_Bit2 = FALSE;
+??UA_v_SetFrameFormat_0:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xFB
+	ST	Z,R16
+;   121    /*~-1*/
+;   122    }
+;   123    /*~E:I13*/
+;   124 /*~-1*/
+;   125 }
+	RET
+;   126 /*~E:F12*/
+;   127 /*~E:A11*/
+;   128 /*~A:14*/
+;   129 /*~+:void UA_v_Enable_Rx (void)*/
+;   130 /*~F:15*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   131 void UA_v_Enable_Rx (void)
+;   132 /*~-1*/
+;   133 {
+;   134    /*~T*/
+;   135    /* enable receiver */
+;   136    UCSR0B_Bit4 = TRUE;
+; __nearfunc void UA_v_Enable_Rx();
+UA_v_Enable_Rx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x10
+	ST	Z,R16
+;   137 
+;   138 /*~-1*/
+;   139 }
+	RET
+;   140 /*~E:F15*/
+;   141 /*~E:A14*/
+;   142 /*~A:16*/
+;   143 /*~+:void UA_v_Disable_Rx (void)*/
+;   144 /*~F:17*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   145 void UA_v_Disable_Rx (void)
+;   146 /*~-1*/
+;   147 {
+;   148    /*~T*/
+;   149    /* disable receiver */
+;   150    UCSR0B_Bit4 = FALSE;
+; __nearfunc void UA_v_Disable_Rx();
+UA_v_Disable_Rx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xEF
+	ST	Z,R16
+;   151 
+;   152 /*~-1*/
+;   153 }
+	RET
+;   154 /*~E:F17*/
+;   155 /*~E:A16*/
+;   156 /*~A:18*/
+;   157 /*~+:void UA_v_Enable_Tx (void)*/
+;   158 /*~F:19*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   159 void UA_v_Enable_Tx (void)
+;   160 /*~-1*/
+;   161 {
+;   162    /*~T*/
+;   163    /* enable transmitter */
+;   164    UCSR0B_Bit3 = TRUE;
+; __nearfunc void UA_v_Enable_Tx();
+UA_v_Enable_Tx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x08
+	ST	Z,R16
+;   165 
+;   166 /*~-1*/
+;   167 }
+	RET
+;   168 /*~E:F19*/
+;   169 /*~E:A18*/
+;   170 /*~A:20*/
+;   171 /*~+:void UA_v_Disable_Tx (void)*/
+;   172 /*~F:21*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   173 void UA_v_Disable_Tx (void)
+;   174 /*~-1*/
+;   175 {
+;   176    /*~T*/
+;   177    /* disable transmitter */
+;   178    UCSR0B_Bit3 = FALSE;
+; __nearfunc void UA_v_Disable_Tx();
+UA_v_Disable_Tx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xF7
+	ST	Z,R16
+;   179 
+;   180 /*~-1*/
+;   181 }
+	RET
+;   182 /*~E:F21*/
+;   183 /*~E:A20*/
+;   184 /*~A:22*/
+;   185 /*~+:void UA_v_Enable_Interrupt_Tx_Complete (void)*/
+;   186 /*~F:23*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   187 void UA_v_Enable_Interrupt_Tx_Complete (void)
+;   188 /*~-1*/
+;   189 {
+;   190    /*~T*/
+;   191    /* enable Tx complete interrupt */
+;   192    UCSR0B_Bit6 = TRUE;
+; __nearfunc void UA_v_Enable_Interrupt_Tx_Complete();
+UA_v_Enable_Interrupt_Tx_Complete:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x40
+	ST	Z,R16
+;   193 
+;   194 /*~-1*/
+;   195 }
+	RET
+;   196 /*~E:F23*/
+;   197 /*~E:A22*/
+;   198 /*~A:24*/
+;   199 /*~+:void UA_v_Disable_Interrupt_Tx_Complete (void)*/
+;   200 /*~F:25*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   201 void UA_v_Disable_Interrupt_Tx_Complete (void)
+;   202 /*~-1*/
+;   203 {
+;   204    /*~T*/
+;   205    /* disable Tx complete interrupt */
+;   206    UCSR0B_Bit6 = FALSE;
+; __nearfunc void UA_v_Disable_Interrupt_Tx_Complete();
+UA_v_Disable_Interrupt_Tx_Complete:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xBF
+	ST	Z,R16
+;   207 
+;   208 /*~-1*/
+;   209 }
+	RET
+;   210 /*~E:F25*/
+;   211 /*~E:A24*/
+;   212 /*~A:26*/
+;   213 /*~+:void UA_v_Enable_Interrupt_Tx_Empty (void)*/
+;   214 /*~F:27*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   215 void UA_v_Enable_Interrupt_Tx_Empty (void)
+;   216 /*~-1*/
+;   217 {
+;   218    /*~T*/
+;   219    /* enable transmit buffer empty interrupt */
+;   220    UCSR0B_Bit5 = TRUE;
+; __nearfunc void UA_v_Enable_Interrupt_Tx_Empty();
+UA_v_Enable_Interrupt_Tx_Empty:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x20
+	ST	Z,R16
+;   221 
+;   222 /*~-1*/
+;   223 }
+	RET
+;   224 /*~E:F27*/
+;   225 /*~E:A26*/
+;   226 /*~A:28*/
+;   227 /*~+:void UA_v_Disable_Interrupt_Tx_Empty (void)*/
+;   228 /*~F:29*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   229 void UA_v_Disable_Interrupt_Tx_Empty (void)
+;   230 /*~-1*/
+;   231 {
+;   232    /*~T*/
+;   233    /* disable transmit buffer empty interrupt */
+;   234    UCSR0B_Bit5 = FALSE;
+; __nearfunc void UA_v_Disable_Interrupt_Tx_Empty();
+UA_v_Disable_Interrupt_Tx_Empty:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xDF
+	ST	Z,R16
+;   235 
+;   236 /*~-1*/
+;   237 }
+	RET
+;   238 /*~E:F29*/
+;   239 /*~E:A28*/
+;   240 /*~A:30*/
+;   241 /*~+:void UA_v_Enable_Interrupt_Rx (void)*/
+;   242 /*~F:31*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   243 void UA_v_Enable_Interrupt_Rx (void)
+;   244 /*~-1*/
+;   245 {
+;   246    /*~T*/
+;   247    /* enable Rx complete interrupt */
+;   248    UCSR0B_Bit7 = TRUE;
+; __nearfunc void UA_v_Enable_Interrupt_Rx();
+UA_v_Enable_Interrupt_Rx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x80
+	ST	Z,R16
+;   249 
+;   250 /*~-1*/
+;   251 }
+	RET
+;   252 /*~E:F31*/
+;   253 /*~E:A30*/
+;   254 /*~A:32*/
+;   255 /*~+:void UA_v_Disable_Interrupt_Rx (void)*/
+;   256 /*~F:33*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   257 void UA_v_Disable_Interrupt_Rx (void)
+;   258 /*~-1*/
+;   259 {
+;   260    /*~T*/
+;   261    /* disable Rx complete interrupt */
+;   262    UCSR0B_Bit7 = FALSE;
+; __nearfunc void UA_v_Disable_Interrupt_Rx();
+UA_v_Disable_Interrupt_Rx:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0x7F
+	ST	Z,R16
+;   263 
+;   264 /*~-1*/
+;   265 }
+	RET
+;   266 /*~E:F33*/
+;   267 /*~E:A32*/
+;   268 /*~A:34*/
+;   269 /*~+:bool_t UA_f_Rx_Complete (void)*/
+;   270 /*~F:35*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   271 bool_t UA_f_Rx_Complete (void)
+;   272 /*~-1*/
+;   273 {
+;   274    /*~T*/
+;   275    /* return receive complete status */
+;   276    return (bool_t)UCSR0A_Bit7;
+; __nearfunc unsigned char UA_f_Rx_Complete();
+UA_f_Rx_Complete:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	LSL	R16
+	LDI	R16,0
+	ROL	R16
+	RET
+;   277 /*~-1*/
+;   278 }
+;   279 /*~E:F35*/
+;   280 /*~E:A34*/
+;   281 /*~A:36*/
+;   282 /*~+:bool_t UA_f_Tx_Complete (void)*/
+;   283 /*~F:37*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   284 bool_t UA_f_Tx_Complete (void)
+;   285 /*~-1*/
+;   286 {
+;   287    /*~T*/
+;   288    /* return transmit complete status */
+;   289    return (bool_t)UCSR0A_Bit6;
+; __nearfunc unsigned char UA_f_Tx_Complete();
+UA_f_Tx_Complete:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	BST	R16,6
+	LDI	R16,0
+	BLD	R16,0
+	RET
+;   290 /*~-1*/
+;   291 }
+;   292 /*~E:F37*/
+;   293 /*~E:A36*/
+;   294 /*~A:38*/
+;   295 /*~+:void UA_v_Clear_Tx_Complete (void)*/
+;   296 /*~F:39*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   297 void UA_v_Clear_Tx_Complete (void)
+;   298 /*~-1*/
+;   299 {
+;   300    /*~T*/
+;   301    /* clear transmit complete status bit */
+;   302    UCSR0A_Bit6 = FALSE;
+; __nearfunc void UA_v_Clear_Tx_Complete();
+UA_v_Clear_Tx_Complete:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xBF
+	ST	Z,R16
+;   303 /*~-1*/
+;   304 }
+	RET
+;   305 /*~E:F39*/
+;   306 /*~E:A38*/
+;   307 /*~A:40*/
+;   308 /*~+:bool_t UA_f_Tx_Empty (void)*/
+;   309 /*~F:41*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   310 bool_t UA_f_Tx_Empty (void)
+;   311 /*~-1*/
+;   312 {
+;   313    /*~T*/
+;   314    /* return transmit buffer empty status */
+;   315    return (bool_t)UCSR0A_Bit5;
+; __nearfunc unsigned char UA_f_Tx_Empty();
+UA_f_Tx_Empty:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	BST	R16,5
+	LDI	R16,0
+	BLD	R16,0
+	RET
+;   316 /*~-1*/
+;   317 }
+;   318 /*~E:F41*/
+;   319 /*~E:A40*/
+;   320 /*~A:42*/
+;   321 /*~+:void UA_v_MPC_WaitAddress (void)*/
+;   322 /*~F:43*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   323 void UA_v_MPC_WaitAddress (void)
+;   324 /*~-1*/
+;   325 {
+;   326    /*~T*/
+;   327    /* enable addressing */
+;   328    UCSR0A_Bit0 = TRUE;
+; __nearfunc void UA_v_MPC_WaitAddress();
+UA_v_MPC_WaitAddress:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	ORI	R16,0x01
+	ST	Z,R16
+;   329 
+;   330 /*~-1*/
+;   331 }
+	RET
+;   332 /*~E:F43*/
+;   333 /*~E:A42*/
+;   334 /*~A:44*/
+;   335 /*~+:void UA_v_MPC_WaitData (void)*/
+;   336 /*~F:45*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   337 void UA_v_MPC_WaitData (void)
+;   338 /*~-1*/
+;   339 {
+;   340    /*~T*/
+;   341    /* wait for data byte */
+;   342    UCSR0A_Bit0 = FALSE;
+; __nearfunc void UA_v_MPC_WaitData();
+UA_v_MPC_WaitData:
+	LDI	R30,_A_UCSR0A
+	LDI	R31,0
+	LD	R16,Z
+	ANDI	R16,0xFE
+	ST	Z,R16
+;   343 
+;   344 /*~-1*/
+;   345 }
+	RET
+;   346 /*~E:F45*/
+;   347 /*~E:A44*/
+;   348 /*~A:46*/
+;   349 /*~+:void UA_v_SendChar (const uint16_t ui16_Char)*/
+;   350 /*~F:47*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   351 void UA_v_SendChar (const uint16_t ui16_Char)
+;   352 /*~-1*/
+;   353 {
+;   354    /*~I:48*/
+;   355    /* char size is 9 bit ? */
+;   356    if (UCSR0B_Bit2)
+; __nearfunc void UA_v_SendChar(uint16_t const);
+UA_v_SendChar:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R18,Z
+	SBRS	R18,2
+	RJMP	??UA_v_SendChar_0
+;   357    /*~-1*/
+;   358    {
+;   359       /*~I:49*/
+;   360       /* must the 9th bit set ?*/
+;   361       if (ui16_Char & (uint16_t)0x0100)
+	MOV	R18,R17
+	SBRS	R18,0
+	RJMP	??UA_v_SendChar_1
+;   362       /*~-1*/
+;   363       {
+;   364          /*~T*/
+;   365          /* set 9th bit */
+;   366          UCSR0B_Bit0 = TRUE;
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R18,Z
+	ORI	R18,0x01
+	ST	Z,R18
+	RJMP	??UA_v_SendChar_0
+;   367       /*~-1*/
+;   368       }
+;   369       /*~O:I49*/
+;   370       /*~-2*/
+;   371       else
+;   372       {
+;   373          /*~T*/
+;   374          /* clear 9th bit */
+;   375          UCSR0B_Bit0 = FALSE;
+??UA_v_SendChar_1:
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R18,Z
+	ANDI	R18,0xFE
+	ST	Z,R18
+;   376       /*~-1*/
+;   377       }
+;   378       /*~E:I49*/
+;   379    /*~-1*/
+;   380    }
+;   381    /*~O:I48*/
+;   382    /*~-2*/
+;   383    else
+;   384    {
+;   385       /*~T*/
+;   386       /* 8 bit or less char size */
+;   387    /*~-1*/
+;   388    }
+;   389    /*~E:I48*/
+;   390    /*~T*/
+;   391    /* send first 8 bits */
+;   392    UDR0 = (uint8_t)ui16_Char;
+??UA_v_SendChar_0:
+	STS	_A_UDR0,R16
+;   393 
+;   394    /*~T*/
+;   395 
+;   396 /*~-1*/
+;   397 }
+	RET
+;   398 /*~E:F47*/
+;   399 /*~E:A46*/
+;   400 /*~A:50*/
+;   401 /*~+:uint8_t UA_ui8_GetErrors (void)*/
+;   402 /*~F:51*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   403 uint8_t UA_ui8_GetErrors (void)
+;   404 /*~-1*/
+;   405 {
+;   406    /*~T*/
+;   407    /* return Rx error status */
+;   408    return (UCSR0A & (uint8_t)0x1C);
+; __nearfunc unsigned char UA_ui8_GetErrors();
+UA_ui8_GetErrors:
+	LDS	R16,_A_UCSR0A
+	ANDI	R16,0x1C
+	RET
+;   409 /*~-1*/
+;   410 }
+;   411 /*~E:F51*/
+;   412 /*~E:A50*/
+;   413 /*~A:52*/
+;   414 /*~+:uint16_t UA_ui16_GetChar (void)*/
+;   415 /*~F:53*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   416 uint16_t UA_ui16_GetChar (void)
+;   417 /*~-1*/
+;   418 {
+;   419    /*~T*/
+;   420    /* receive char, clear all bits at initialization */
+;   421    uint16_t ui16_Result = 0;
+; __nearfunc unsigned short UA_ui16_GetChar();
+UA_ui16_GetChar:
+	LDI	R16,0
+	LDI	R17,0
+;   422    /*~I:54*/
+;   423    /* char size is 9 bit ? */
+;   424    if (UCSR0B_Bit2)
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R18,Z
+	SBRS	R18,2
+	RJMP	??UA_ui16_GetChar_0
+;   425    /*~-1*/
+;   426    {
+;   427       /*~I:55*/
+;   428       /* is the 9th bit set ?*/
+;   429       if (UCSR0B_Bit1)
+	LDI	R30,_A_UCSR0B
+	LDI	R31,0
+	LD	R18,Z
+	SBRS	R18,1
+	RJMP	??UA_ui16_GetChar_0
+;   430       /*~-1*/
+;   431       {
+;   432          /*~T*/
+;   433          /* set 9th bit in result */
+;   434          ui16_Result = (uint16_t)0x100;
+	LDI	R16,0
+	LDI	R17,1
+;   435       /*~-1*/
+;   436       }
+;   437       /*~O:I55*/
+;   438       /*~-2*/
+;   439       else
+;   440       {
+;   441          /*~T*/
+;   442          /* 9th bit in result is cleared */
+;   443 
+;   444       /*~-1*/
+;   445       }
+;   446       /*~E:I55*/
+;   447    /*~-1*/
+;   448    }
+;   449    /*~O:I54*/
+;   450    /*~-2*/
+;   451    else
+;   452    {
+;   453       /*~T*/
+;   454       /* less than 9 bit char size */
+;   455    /*~-1*/
+;   456    }
+;   457    /*~E:I54*/
+;   458    /*~T*/
+;   459    /* add first 8 bits to the result */
+;   460    ui16_Result |= (uint16_t)UDR0;
+??UA_ui16_GetChar_0:
+	LDS	R18,_A_UDR0
+	LDI	R19,0
+	OR	R16,R18
+	OR	R17,R19
+;   461 
+;   462    /* return received char */
+;   463    return ui16_Result;
+	RET
+;   464 
+;   465 /*~-1*/
+;   466 }
+;   467 /*~E:F53*/
+;   468 /*~E:A52*/
+;   469 /*~K*/
+;   470 /*~+:-----   SPECIFIC USER DEFINED FUNCTIONS   -----*/
+;   471 /*~A:56*/
+;   472 /*~+:void UA_v_Init (void)*/
+;   473 /*~F:57*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   474 void UA_v_Init (void)
+;   475 /*~-1*/
+;   476 {
+;   477    /*~K*/
+;   478    /*~+:-----   PLACE USER INITIALISATION CODE   -----*/
+;   479    /*~T*/
+;   480    /* baudrate 9.6k */
+;   481    UA_v_SetBaudrate (UA_ui16_009600_BPS);
+; __nearfunc void UA_v_Init();
+UA_v_Init:
+        FUNCALL UA_v_Init, UA_v_SetBaudrate
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_SetFrameFormat
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Enable_Tx
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Enable_Rx
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Disable_Interrupt_Tx_Complete
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Disable_Interrupt_Tx_Empty
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Disable_Interrupt_Rx
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL UA_v_Init, UA_v_Clear_Tx_Complete
+        LOCFRAME RSTACK, 2, STACK
+	LDI	R16,51
+	LDI	R17,0
+	RCALL	UA_v_SetBaudrate
+;   482 
+;   483    /* set frame format */
+;   484    UA_v_SetFrameFormat (UA_ui8_ASYNCHRONOUS, UA_ui8_NO_PARITY, UA_ui8_ONE_STOP, UA_ui8_EIGHT_BITS, UA_ui8_POLARITY_LOW);
+	LDI	R20,0
+	LDI	R19,6
+	LDI	R18,0
+	LDI	R17,0
+	LDI	R16,0
+	RCALL	UA_v_SetFrameFormat
+;   485 
+;   486    /* enable Tx */
+;   487    UA_v_Enable_Tx ();
+	RCALL	UA_v_Enable_Tx
+;   488 
+;   489    /* enable Rx */
+;   490    UA_v_Enable_Rx ();
+	RCALL	UA_v_Enable_Rx
+;   491 
+;   492    /* disable interrupt Tx */
+;   493    UA_v_Disable_Interrupt_Tx_Complete ();
+	RCALL	UA_v_Disable_Interrupt_Tx_Complete
+;   494 
+;   495    /* disable interrupt Tx buffer empty */
+;   496    UA_v_Disable_Interrupt_Tx_Empty ();
+	RCALL	UA_v_Disable_Interrupt_Tx_Empty
+;   497 
+;   498    /* disable interrupt Rx complete */
+;   499    UA_v_Disable_Interrupt_Rx ();
+	RCALL	UA_v_Disable_Interrupt_Rx
+;   500 
+;   501    /* clear Tx complete interrupt flag */
+;   502    UA_v_Clear_Tx_Complete ();
+	RCALL	UA_v_Clear_Tx_Complete
+;   503 
+;   504 /*~-1*/
+;   505 }
+	RET
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01cH
+__?EECR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01dH
+__?EEDR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01eH
+__?EEARL:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01fH
+__?EEARH:
+
+        END
+;   506 /*~E:F57*/
+;   507 /*~E:A56*/
+; 
+;      6 bytes in segment ABSOLUTE
+;    394 bytes in segment CODE
+; 
+;    394 bytes of CODE memory
+;      0 bytes of DATA memory (+ 6 bytes shared)
+;
+;Errors: none
+;Warnings: none

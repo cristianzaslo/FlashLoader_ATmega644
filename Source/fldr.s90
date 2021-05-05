@@ -1,0 +1,201 @@
+        NAME Fldr
+
+        RTMODEL "__64bit_doubles", "disabled"
+        RTMODEL "__cpu", "3"
+        RTMODEL "__cpu_name", "AT90Mega16"
+        RTMODEL "__enhanced_core", "enabled"
+        RTMODEL "__has_elpm", "false"
+        RTMODEL "__memory_model", "2"
+        RTMODEL "__rt_version", "2.30"
+
+        RSEG CSTACK:DATA:NOROOT(0)
+        RSEG RSTACK:DATA:NOROOT(0)
+
+
+        PUBLIC FL_aui8_FlashPage
+
+        PUBLIC FL_v_Erase_Page
+        PUBLIC FL_v_Load_Page
+        PUBLIC FL_v_Write_Page
+
+        
+        PUBWEAK __?EEARH
+        PUBWEAK __?EEARL
+        PUBWEAK __?EECR
+        PUBWEAK __?EEDR
+;     1 /*~-1*/
+;     2 /*~XSF_LANGUAGE: C/C++*/
+;     3 /*~A:1*/
+;     4 /*~+:Header*/
+;     5 /*~T*/
+;     6 /* SOURCE FILE    <Fldr.c>
+;     7 
+;     8  **************************************************************************
+;    19  *  PROJECT       <FlashLoader_AT644>
+;    20  *  MODULE        <Fldr>
+;    21  *  RESPONSIBLE   <Cristian Zaslo>
+;    22  **************************************************************************
+;    23  *  PURPOSE:      Flash driver
+;    24  *
+;    25  *
+;    26  **************************************************************************
+;    27  *  REMARKS:
+;    28  *  ATMEGA 644 compliant
+;    29  *
+;    30  **************************************************************************
+;    31  *  CHANGE HISTORY:
+;    32  *
+;    33  *  Rev 1.0   Mar 01 2021    CrZa
+;    34  *  Initial revision.
+;    35  *
+;    36  *************************************************************************/
+
+
+; register definition
+#define ZH    R31
+#define ZL    R30
+#define YH    R29
+#define YL    R28
+#define temp1 R20
+#define temp2 R2
+#define temp3 R3
+
+; page size in words
+PAGESIZE EQU 128
+
+; command parameters
+SPMCR      EQU 0x37
+BIT_SPMEN  EQU 0x00
+
+SPMEN  EQU 0x01
+PGERS  EQU 0x02
+PGWRT  EQU 0x04
+RWWSRE EQU 0x10
+
+
+
+        RSEG NEAR_N:DATA:NOROOT(0)
+
+; unsigned char __near FL_aui8_FlashPage[256];
+FL_aui8_FlashPage:
+	DS 256
+
+
+        RSEG CODE:CODE:NOROOT(1)
+
+
+
+; __nearfunc void FL_v_Erase_Page (uint8_t);
+FL_v_Erase_Page:
+
+        MOV ZH,R16;                 load page into ZH
+        LDI ZL, 0;
+
+Wait_spm1:
+        IN temp1, SPMCR;            read SPMCR reg
+        SBRC temp1, BIT_SPMEN;      jump if bit #0 cleared
+        RJMP Wait_spm1;             wait
+
+        LDI temp1, PGERS | SPMEN;   load ERASE command 
+        OUT SPMCR, temp1;           store ERASE command
+        SPM;                        execute ERASE command
+
+
+; enable
+Wait_spm5:
+        IN temp1, SPMCR;            read SPMCR reg
+        SBRC temp1, BIT_SPMEN;      jump if bit #0 cleared
+        RJMP Wait_spm5;             wait
+
+        LDI temp1, RWWSRE | SPMEN;  load ENABLE command
+        OUT SPMCR, temp1;           store ENABLE command
+        SPM;                        execute ENABLE command
+
+
+	RET;                        return
+
+
+
+; __nearfunc void FL_v_Load_Page (void);
+FL_v_Load_Page:
+; save Y
+        MOV temp2, YL;             save YL
+        MOV temp3, YH;             save YH
+      
+        LDI YH, HIGH(FL_aui8_FlashPage);  init address to read, high
+        LDI YL, LOW(FL_aui8_FlashPage);   init address to read, low
+
+        LDI ZH,0;                  init ZH
+        LDI ZL,0;                  init ZL
+
+        LDI R16, PAGESIZE;         init page size
+
+loop:
+        LD R0,Y+;                  read low byte
+        LD R1,Y+;                  read high byte
+
+Wait_spm2:
+        IN temp1, SPMCR;           read SPMCR reg
+        SBRC temp1, BIT_SPMEN;     jump if bit #0 cleared
+        RJMP Wait_spm2;            wait
+
+        LDI temp1, SPMEN;          load LOAD command
+        OUT SPMCR, temp1;          store LOAD command
+        SPM;                       execute LOAD command
+
+        ADIW ZH:ZL, 2;             next word address
+
+        SUBI R16, 1;               dec pagesize
+        BRNE loop;                 branch if not zero
+
+; restore Y
+        MOV YL, temp2;             restore YL
+        MOV YH, temp3;             restore YH
+        
+        RET;                       return
+
+
+
+; __nearfunc void FL_v_Write_Page (uint8_t);
+FL_v_Write_Page:
+
+        MOV ZH,R16;                load page 
+
+Wait_spm3:
+        IN temp1, SPMCR;           read SPMCR reg
+        SBRC temp1, BIT_SPMEN;     jump if bit #0 cleared
+        RJMP Wait_spm3;            wait
+
+        LDI temp1, PGWRT | SPMEN;  load WRITE command
+        OUT SPMCR, temp1;          store WRITE command
+        SPM;                       execute WRITE command
+
+; enable
+Wait_spm4:
+        IN temp1, SPMCR;           read SPMCR reg
+        SBRC temp1, BIT_SPMEN;     jump if bit #0 cleared
+        RJMP Wait_spm4;            wait
+
+        LDI temp1, RWWSRE | SPMEN; load ENABLE command
+        OUT SPMCR, temp1;          store ENABLE command
+        SPM;                       execute ENABLE command
+
+
+	RET;                       return
+
+
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01cH
+__?EECR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01dH
+__?EEDR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01eH
+__?EEARL:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01fH
+__?EEARH:
+
+        END
+

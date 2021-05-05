@@ -1,0 +1,33 @@
+
+--- Module:   D:\Projects\FlashLoader_AT644\Source\Main.c (C)
+               _
+#if TID_GUARD(3)
+D:\Projects\FlashLoader_AT644\Source\iom644.h  16  Error 10: Expecting end of
+    line
+                                             _
+            FL_v_Erase_Page (ui8_PageCounter);
+D:\Projects\FlashLoader_AT644\Source\Main.c  336  Warning 644: Variable
+    'ui8_PageCounter' (line 111) may not have been initialized
+D:\Projects\FlashLoader_AT644\Source\Main.c  111  Info 830: Location cited in
+    prior message
+                                                                                                             _
+                  ui16_CChecksum += *(__flash  uint8_t *)(((uint16_t)ui8_PageCounter << 8) + ui8_ByteCounter); 
+D:\Projects\FlashLoader_AT644\Source\Main.c  404  Warning 613: Possible use of
+    null pointer 'unknown-name' in argument to operator 'unary *' [Reference:
+    file D:\Projects\FlashLoader_AT644\Source\Main.c: lines 388, 396, 404]
+D:\Projects\FlashLoader_AT644\Source\Main.c  388  Info 831: Reference cited in
+    prior message
+D:\Projects\FlashLoader_AT644\Source\Main.c  396  Info 831: Reference cited in
+    prior message
+D:\Projects\FlashLoader_AT644\Source\Main.c  404  Info 831: Reference cited in
+    prior message
+                                                _
+            if (ui16_CChecksum == ui16_EChecksum)
+D:\Projects\FlashLoader_AT644\Source\Main.c  417  Warning 644: Variable
+    'ui16_EChecksum' (line 114) may not have been initialized
+D:\Projects\FlashLoader_AT644\Source\Main.c  114  Info 830: Location cited in
+    prior message
+          _
+   while (TRUE); /* endless loop */
+D:\Projects\FlashLoader_AT644\Source\Main.c  464  Warning 506: Constant value
+    Boolean

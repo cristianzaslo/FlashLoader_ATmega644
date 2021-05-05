@@ -1,0 +1,165 @@
+        NAME Io
+
+        RTMODEL "__64bit_doubles", "disabled"
+        RTMODEL "__cpu", "3"
+        RTMODEL "__cpu_name", "AT90Mega16"
+        RTMODEL "__enhanced_core", "enabled"
+        RTMODEL "__has_elpm", "false"
+        RTMODEL "__memory_model", "2"
+        RTMODEL "__rt_version", "2.30"
+
+        RSEG CSTACK:DATA:NOROOT(0)
+        RSEG RSTACK:DATA:NOROOT(0)
+
+
+        PUBLIC IO_v_Init
+        FUNCTION IO_v_Init,0203H
+        PUBWEAK _A_DDRD
+        PUBWEAK _A_MCUCR
+        PUBWEAK _A_PORTD
+        PUBWEAK __?EEARH
+        PUBWEAK __?EEARL
+        PUBWEAK __?EECR
+        PUBWEAK __?EEDR
+;     1 /*~-1*/
+;     2 /*~XSF_LANGUAGE: C/C++*/
+;     3 /*~A:1*/
+;     4 /*~+:Header*/
+;     5 /*~T*/
+;     6 /* SOURCE FILE    <Io.c>
+;     7 
+;     8  **************************************************************************
+;     9  *  PROJECT       <FlashLoader_AT644>
+;    10  *  MODULE        <Io>
+;    11  *  RESPONSIBLE   <Cristian Zaslo>
+;    12  **************************************************************************
+;    13  *  PURPOSE:      IO driver
+;    14  *
+;    15  *
+;    16  *
+;    17  **************************************************************************
+;    18  *  REMARKS:
+;    19  *  ATMEGA 644 compliant
+;    20  *
+;    21  **************************************************************************
+;    22  *  CHANGE HISTORY:
+;    23  *  Log of all revisions so far:
+;    24  *
+;    25  *  Rev 1.0   Mar 01 2021    CrZa
+;    26  *  Initial revision.
+;    27  *
+;    28  *************************************************************************/
+;    29 
+;    30 
+;    31 
+;    32 /*~E:A1*/
+;    33 /*~A:2*/
+;    34 /*~+:Includes*/
+;    35 /*~T*/
+;    36 /* included files */
+;    37 #include <iom644.h>
+
+        ASEGN ABSOLUTE:DATA:NOROOT,02aH
+; union <unnamed> volatile __io _A_DDRD;
+_A_DDRD:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,02bH
+; union <unnamed> volatile __io _A_PORTD;
+_A_PORTD:
+	DS 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,055H
+; union <unnamed> volatile __io _A_MCUCR;
+_A_MCUCR:
+	DS 1
+;    38 #include "Global.h"
+;    39 #include "Io.h"    
+;    40 /*~E:A2*/
+;    41 /*~A:3*/
+;    42 /*~+:Types*/
+;    43 /*~T*/
+;    44 
+;    45 /*~E:A3*/
+;    46 /*~A:4*/
+;    47 /*~+:Constants*/
+;    48 /*~T*/
+;    49 
+;    50 /*~E:A4*/
+;    51 /*~A:5*/
+;    52 /*~+:Variables*/
+;    53 /*~T*/
+;    54 
+;    55 /*~E:A5*/
+;    56 /*~A:6*/
+;    57 /*~+:Macros*/
+;    58 /*~T*/
+;    59 
+;    60 /*~E:A6*/
+;    61 /*~A:7*/
+;    62 /*~+:Flags / Bit Masks*/
+;    63 /*~T*/
+;    64 
+;    65 /*~E:A7*/
+;    66 /*~A:8*/
+;    67 /*~+:Function prototypes*/
+;    68 /*~T*/
+;    69 
+;    70 /*~E:A8*/
+;    71 /*~K*/
+;    72 /*~+:-----   SPECIFIC USER DEFINED FUNCTIONS   -----*/
+;    73 /*~A:9*/
+;    74 /*~+:void IO_v_Init (void)*/
+;    75 /*~F:10*/
+;    76 /* module initialization */
+
+        RSEG CODE:CODE:NOROOT(1)
+;    77 void IO_v_Init (void)
+;    78 /*~-1*/
+;    79 {
+;    80    /*~T*/
+;    81    /* configure FLI pin */
+;    82    IO_v_SET_PIN_DIR (IO_f_PORT_FLI, INPUT);
+; __nearfunc void IO_v_Init();
+IO_v_Init:
+	CBI	0x0A,0x02
+;    83    IO_v_SET_PIN_PUL (IO_f_PORT_FLI);
+	IN	R16,0x35
+	ANDI	R16,0xEF
+	OUT	0x35,R16
+	SBI	0x0B,0x02
+	CBI	0x0A,0x02
+;    84 
+;    85    /* configure toggle pin */
+;    86    IO_v_SET_PIN_DIR (IO_f_PORT_TOG, OUTPUT);
+	SBI	0x0A,0x03
+;    87    IO_v_SET_PIN_LATCH (IO_f_PORT_TOG, HIGH);
+	SBI	0x0B,0x03
+;    88 /*~-1*/
+;    89 }
+	RET
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01cH
+__?EECR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01dH
+__?EEDR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01eH
+__?EEARL:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01fH
+__?EEARH:
+
+        END
+;    90 /*~E:F10*/
+;    91 /*~E:A9*/
+; 
+;      3 bytes in segment ABSOLUTE
+;     18 bytes in segment CODE
+; 
+;     18 bytes of CODE memory
+;      0 bytes of DATA memory (+ 3 bytes shared)
+;
+;Errors: none
+;Warnings: none

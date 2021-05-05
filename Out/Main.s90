@@ -1,0 +1,777 @@
+        NAME Main
+
+        RTMODEL "__64bit_doubles", "disabled"
+        RTMODEL "__cpu", "3"
+        RTMODEL "__cpu_name", "AT90Mega16"
+        RTMODEL "__enhanced_core", "enabled"
+        RTMODEL "__has_elpm", "false"
+        RTMODEL "__memory_model", "2"
+        RTMODEL "__rt_version", "2.30"
+
+        RSEG CSTACK:DATA:NOROOT(0)
+        RSEG RSTACK:DATA:NOROOT(0)
+
+        EXTERN GL_v_Init
+        FUNCTION GL_v_Init,0202H
+        EXTERN IO_v_Init
+        FUNCTION IO_v_Init,0202H
+        EXTERN UA_v_Init
+        FUNCTION UA_v_Init,0202H
+        EXTERN UA_v_SendChar
+        FUNCTION UA_v_SendChar,0202H
+        EXTERN UA_f_Rx_Complete
+        FUNCTION UA_f_Rx_Complete,0202H
+        EXTERN UA_ui16_GetChar
+        FUNCTION UA_ui16_GetChar,0202H
+        EXTERN FL_aui8_FlashPage
+        EXTERN UA_ui8_GetErrors
+        FUNCTION UA_ui8_GetErrors,0202H
+        EXTERN FL_v_Erase_Page
+        FUNCTION FL_v_Erase_Page,0202H
+        EXTERN FL_v_Load_Page
+        FUNCTION FL_v_Load_Page,0202H
+        EXTERN FL_v_Write_Page
+        FUNCTION FL_v_Write_Page,0202H
+
+        PUBWEAK _A_PIND
+        PUBWEAK __?EEARH
+        PUBWEAK __?EEARL
+        PUBWEAK __?EECR
+        PUBWEAK __?EEDR
+        PUBLIC main
+        FUNCTION main,0a1a03H
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+;     1 /*~-1*/
+;     2 /*~XSF_LANGUAGE: C/C++*/
+;     3 /*~A:1*/
+;     4 /*~+:Header*/
+;     5 /*~T*/
+;     6 /* SOURCE FILE     <Main.c>
+;     7 
+;     8  **************************************************************************
+;     9  *  PROJECT       <FlashLoader_AT644>
+;    10  *  MODULE        <Main>
+;    11  *  RESPONSIBLE   <Cristian Zaslo>
+;    12  **************************************************************************
+;    13  *  PURPOSE:      Program entry point
+;    14  *
+;    15  *
+;    16  **************************************************************************
+;    17  *  REMARKS:
+;    18  *  none
+;    19  *
+;    20  **************************************************************************
+;    21  *  CHANGE HISTORY:
+;    22  *  Log of all revisions so far:
+;    23  *
+;    24  *  Rev 1.0   May 01 2021    CrZa
+;    25  *  Initial revision.
+;    26  *
+;    27  *************************************************************************/
+;    28 
+;    29 
+;    30 
+;    31 /*~E:A1*/
+;    32 /*~A:2*/
+;    33 /*~+:Includes*/
+;    34 /*~T*/
+;    35 #include <iom644.h>
+
+        ASEGN ABSOLUTE:DATA:NOROOT,029H
+; union <unnamed> volatile __io _A_PIND;
+_A_PIND:
+	DS 1
+;    36 #include "Global.h"
+;    37 #include "Io.h"
+;    38 #include "Uart.h"
+;    39 #include "Fldr.h"
+;    40 #include "Main.h"
+;    41 
+;    42 
+;    43 /*~E:A2*/
+;    44 /*~A:3*/
+;    45 /*~+:Types*/
+;    46 /*~T*/
+;    47 
+;    48 /*~E:A3*/
+;    49 /*~A:4*/
+;    50 /*~+:Constants*/
+;    51 /*~T*/
+;    52 /* header value */
+;    53 #define MA_ui8_HEADER  0x55
+;    54 
+;    55 /*~T*/
+;    56 /* header size */
+;    57 #define MA_ui8_HEADER_SIZE (uint8_t)3
+;    58 
+;    59 /*~T*/
+;    60 /* positive acknowledge */
+;    61 #define MA_ui8_POSITIVE_ACKN 0x55
+;    62 
+;    63 /* negative acknowledge */
+;    64 #define MA_ui8_NEGATIVE_ACKN 0xAA
+;    65 
+;    66 /*~T*/
+;    67 /* program states */
+;    68 #define MA_ui8_INIT           0
+;    69 #define MA_ui8_READ_HEADER    1
+;    70 #define MA_ui8_READ_PAGE      2
+;    71 #define MA_ui8_WRITE_PAGE     3
+;    72 #define MA_ui8_CHECK_PRG      4
+;    73 #define MA_ui8_END           10
+;    74 
+;    75 /*~E:A4*/
+;    76 /*~A:5*/
+;    77 /*~+:Variables*/
+;    78 /*~T*/
+;    79 
+;    80 
+;    81 /*~E:A5*/
+;    82 /*~A:6*/
+;    83 /*~+:Macros*/
+;    84 /*~T*/
+;    85 
+;    86 /*~E:A6*/
+;    87 /*~A:7*/
+;    88 /*~+:Flags / Bit Masks*/
+;    89 /*~T*/
+;    90 
+;    91 /*~E:A7*/
+;    92 /*~A:8*/
+;    93 /*~+:Function prototypes*/
+;    94 /*~T*/
+;    95 
+;    96 /*~E:A8*/
+;    97 /*~A:9*/
+;    98 /*~+:int main (void)*/
+;    99 /*~F:10*/
+
+        RSEG CODE:CODE:NOROOT(1)
+;   100 int main (void)
+;   101 /*~-1*/
+;   102 {
+; __nearfunc int main();
+main:
+        FUNCALL main, GL_v_Init
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, IO_v_Init
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_Init
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_f_Rx_Complete
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_ui16_GetChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_ui8_GetErrors
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_f_Rx_Complete
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_ui16_GetChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_ui8_GetErrors
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, FL_v_Erase_Page
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, FL_v_Load_Page
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, FL_v_Write_Page
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+        FUNCALL main, UA_v_SendChar
+        LOCFRAME CSTACK, 4, STACK
+        LOCFRAME RSTACK, 2, STACK
+	ST	-Y,R27
+	ST	-Y,R26
+	ST	-Y,R25
+	ST	-Y,R24
+;   103    /*~T*/
+;   104    /* state */
+;   105    uint8_t ui8_State;
+;   106 
+;   107    /* byte counter */
+;   108    uint8_t ui8_ByteCounter;
+;   109 
+;   110    /* page counter */
+;   111    uint8_t ui8_PageCounter;
+;   112 
+;   113    /* expected checksum */
+;   114    uint16_t ui16_EChecksum;
+;   115 
+;   116    /* calculated checksum */
+;   117    uint16_t ui16_CChecksum;
+;   118 
+;   119    /*~T*/
+;   120    /* init global */
+;   121    GL_v_Init ();
+	CALL	GL_v_Init
+;   122 
+;   123    /* init IOs */
+;   124    IO_v_Init ();
+	CALL	IO_v_Init
+;   125 
+;   126    /*~I:11*/
+;   127    /* check three times on low level on FLI pin */
+;   128    if (!IO_ui8_GET_PIN_TERMINAL (IO_f_PORT_FLI) && !IO_ui8_GET_PIN_TERMINAL (IO_f_PORT_FLI) && !IO_ui8_GET_PIN_TERMINAL (IO_f_PORT_FLI))
+	SBIC	0x09,0x02
+	RJMP	??main_0
+	SBIC	0x09,0x02
+	RJMP	??main_0
+	SBIS	0x09,0x02
+	RJMP	??main_1
+;   129    /*~-1*/
+;   130    {
+;   131       /*~T*/
+;   132       /* FLI input is low, go to FL section */
+;   133    /*~-1*/
+;   134    }
+;   135    /*~O:I11*/
+;   136    /*~-2*/
+;   137    else
+;   138    {
+;   139       /*~T*/
+;   140       /* FLI input is high, jump to application */
+;   141       asm("JMP 0x0000\n");
+??main_0:
+        JMP 0x0000
+;   142 
+;   143    /*~-1*/
+;   144    }
+;   145    /*~E:I11*/
+;   146    /*~T*/
+;   147    /* init state */
+;   148    ui8_State = MA_ui8_INIT;
+??main_1:
+	LDI	R16,0
+	RJMP	??main_2
+;   149    /*~U:12*/
+;   150    /*~-2*/
+;   151    do
+;   152    {
+;   153       /*~C:13*/
+;   154       /* selection on state */
+;   155       switch (ui8_State)
+;   156       /*~-1*/
+;   157       {
+;   158          /*~A:14*/
+;   159          /*~+:Init*/
+;   160          /*~F:15*/
+;   161          /* init */
+;   162          case MA_ui8_INIT:
+;   163          /*~-1*/
+;   164          {
+;   165             /*~T*/
+;   166             /* disable interrupts */
+;   167             asm("CLI\n");
+??main_3:
+        CLI
+;   168 
+;   169             /* init UART */
+;   170             UA_v_Init ();
+	CALL	UA_v_Init
+;   171 
+;   172             /* send char */
+;   173             UA_v_SendChar (MA_ui8_HEADER);
+	LDI	R16,85
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   174 
+;   175             /* init page counter */
+;   176             ui8_PageCounter = 0;
+	LDI	R25,0
+;   177 
+;   178             /* change state */
+;   179             ui8_State = MA_ui8_READ_HEADER;
+	LDI	R16,1
+??main_2:
+	MOV	R17,R16
+	SUBI	R17,0
+	BREQ	??main_3
+	DEC	R17
+	BREQ	??main_4
+	DEC	R17
+	BREQ	??main_5
+	DEC	R17
+	BRNE	??main_6
+	RJMP	??main_7
+??main_6:
+	DEC	R17
+	BRNE	??main_8
+	RJMP	??main_9
+??main_8:
+	RJMP	??main_2
+;   180 
+;   181             /*~T*/
+;   182             /* break */
+;   183             break;
+;   184          /*~-1*/
+;   185          }
+;   186          /*~E:F15*/
+;   187          /*~E:A14*/
+;   188          /*~A:16*/
+;   189          /*~+:Read header*/
+;   190          /*~F:17*/
+;   191          /* read header */
+;   192          case MA_ui8_READ_HEADER:
+;   193          /*~-1*/
+;   194          {
+;   195             /*~T*/
+;   196             /* init counter */
+;   197             ui8_ByteCounter = 0;
+??main_4:
+	LDI	R24,0
+;   198             /*~U:18*/
+;   199             /*~-2*/
+;   200             do
+;   201             {
+;   202                /*~U:19*/
+;   203                /*~-2*/
+;   204                do
+;   205                {
+;   206                   /*~T*/
+;   207                   /* wait for Rx buffer full */
+;   208                /*~-1*/
+;   209                }
+;   210                /*~O:U19*/
+;   211                while (!UA_f_Rx_Complete ()); /* loop */
+??main_10:
+	CALL	UA_f_Rx_Complete
+	TST	R16
+	BREQ	??main_10
+;   212                /*~E:U19*/
+;   213                /*~T*/
+;   214                /* store byte into buffer */
+;   215                FL_aui8_FlashPage [ui8_ByteCounter] = (uint8_t)UA_ui16_GetChar ();
+	CALL	UA_ui16_GetChar
+	MOV	R18,R16
+	MOV	R16,R24
+	LDI	R17,0
+	MOVW	R31 : R30,R17 : R16
+	SUBI	R30,LOW((-(FL_aui8_FlashPage) & 0xFFFF))
+	SBCI	R31,(-(FL_aui8_FlashPage) & 0xFFFF) >> 8
+	ST	Z,R18
+;   216 
+;   217             /*~-1*/
+;   218             }
+;   219             /*~O:U18*/
+;   220             while (ui8_ByteCounter++ < (uint8_t)(MA_ui8_HEADER_SIZE - 1));/* loop */
+	MOV	R16,R24
+	MOV	R24,R16
+	INC	R24
+	CPI	R16,2
+	BRCS	??main_10
+;   221             /*~E:U18*/
+;   222             /*~I:20*/
+;   223             /* Rx error or wrong identification ? */
+;   224             if (UA_ui8_GetErrors () || (FL_aui8_FlashPage [0] != MA_ui8_HEADER))
+	CALL	UA_ui8_GetErrors
+	TST	R16
+	BRNE	??main_11
+	LDS	R16,FL_aui8_FlashPage
+	CPI	R16,85
+	BREQ	??main_12
+;   225             /*~-1*/
+;   226             {
+;   227                /*~T*/
+;   228                /* send feedback */
+;   229                UA_v_SendChar (MA_ui8_NEGATIVE_ACKN);
+??main_11:
+	LDI	R16,170
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   230 
+;   231                /* change state */
+;   232                ui8_State = MA_ui8_END;
+	LDI	R16,10
+	RJMP	??main_2
+;   233 
+;   234             /*~-1*/
+;   235             }
+;   236             /*~O:I20*/
+;   237             /*~-2*/
+;   238             else
+;   239             {
+;   240                /*~T*/
+;   241                /* store expected checksum */
+;   242                ui16_EChecksum = (uint16_t)FL_aui8_FlashPage [1];
+??main_12:
+	LDS	R26,(FL_aui8_FlashPage + 1)
+	LDI	R27,0
+;   243                ui16_EChecksum += ((uint16_t)FL_aui8_FlashPage [2] << 8);
+	LDS	R17,(FL_aui8_FlashPage + 2)
+	LDI	R16,0
+	ADD	R26,R16
+	ADC	R27,R17
+;   244 
+;   245                /* send feedback */
+;   246                UA_v_SendChar (MA_ui8_HEADER);
+	LDI	R16,85
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   247 
+;   248                /* change state */
+;   249                ui8_State = MA_ui8_READ_PAGE;
+	LDI	R16,2
+	RJMP	??main_2
+;   250 
+;   251             /*~-1*/
+;   252             }
+;   253             /*~E:I20*/
+;   254             /*~T*/
+;   255             /* break */
+;   256             break;
+;   257          /*~-1*/
+;   258          }
+;   259          /*~E:F17*/
+;   260          /*~E:A16*/
+;   261          /*~A:21*/
+;   262          /*~+:Read page*/
+;   263          /*~F:22*/
+;   264          /* read page */
+;   265          case MA_ui8_READ_PAGE:
+;   266          /*~-1*/
+;   267          {
+;   268             /*~T*/
+;   269             /* init counter */
+;   270             ui8_ByteCounter = 0;
+??main_5:
+	LDI	R24,0
+;   271             /*~U:23*/
+;   272             /*~-2*/
+;   273             do
+;   274             {
+;   275                /*~U:24*/
+;   276                /*~-2*/
+;   277                do
+;   278                {
+;   279                   /*~T*/
+;   280                   /* wait for Rx buffer full */
+;   281                /*~-1*/
+;   282                }
+;   283                /*~O:U24*/
+;   284                while (!UA_f_Rx_Complete ()); /* loop */
+??main_13:
+	CALL	UA_f_Rx_Complete
+	TST	R16
+	BREQ	??main_13
+;   285                /*~E:U24*/
+;   286                /*~T*/
+;   287                /* store byte into buffer */
+;   288                FL_aui8_FlashPage [ui8_ByteCounter] = (uint8_t)UA_ui16_GetChar ();
+	CALL	UA_ui16_GetChar
+	MOV	R18,R16
+	MOV	R16,R24
+	LDI	R17,0
+	MOVW	R31 : R30,R17 : R16
+	SUBI	R30,LOW((-(FL_aui8_FlashPage) & 0xFFFF))
+	SBCI	R31,(-(FL_aui8_FlashPage) & 0xFFFF) >> 8
+	ST	Z,R18
+;   289 
+;   290             /*~-1*/
+;   291             }
+;   292             /*~O:U23*/
+;   293             while (ui8_ByteCounter++ < (uint8_t)(MA_ui16_PAGE_SIZE - 1));/* loop */
+	MOV	R16,R24
+	MOV	R24,R16
+	INC	R24
+	CPI	R16,255
+	BRCS	??main_13
+;   294             /*~E:U23*/
+;   295             /*~I:25*/
+;   296             /* Rx error or wrong identification ? */
+;   297             if (UA_ui8_GetErrors ())
+	CALL	UA_ui8_GetErrors
+	TST	R16
+	BREQ	??main_14
+;   298             /*~-1*/
+;   299             {
+;   300                /*~T*/
+;   301                /* send feedback */
+;   302                UA_v_SendChar (MA_ui8_NEGATIVE_ACKN);
+	LDI	R16,170
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   303 
+;   304                /* change state */
+;   305                ui8_State = MA_ui8_END;
+	LDI	R16,10
+	RJMP	??main_2
+;   306 
+;   307             /*~-1*/
+;   308             }
+;   309             /*~O:I25*/
+;   310             /*~-2*/
+;   311             else
+;   312             {
+;   313                /*~T*/
+;   314                /* change state */
+;   315                ui8_State = MA_ui8_WRITE_PAGE;
+??main_14:
+	LDI	R16,3
+	RJMP	??main_2
+;   316 
+;   317             /*~-1*/
+;   318             }
+;   319             /*~E:I25*/
+;   320             /*~T*/
+;   321             /* break */
+;   322             break;
+;   323          /*~-1*/
+;   324          }
+;   325          /*~E:F22*/
+;   326          /*~E:A21*/
+;   327          /*~A:26*/
+;   328          /*~+:Write page*/
+;   329          /*~F:27*/
+;   330          /* write page */
+;   331          case MA_ui8_WRITE_PAGE:
+;   332          /*~-1*/
+;   333          {
+;   334             /*~T*/
+;   335             /* erase page */
+;   336             FL_v_Erase_Page (ui8_PageCounter);
+??main_7:
+	MOV	R16,R25
+	CALL	FL_v_Erase_Page
+;   337 
+;   338             /* load page */
+;   339             FL_v_Load_Page ();
+	CALL	FL_v_Load_Page
+;   340 
+;   341             /* write page */
+;   342             FL_v_Write_Page (ui8_PageCounter);
+	MOV	R16,R25
+	CALL	FL_v_Write_Page
+;   343 
+;   344             /* send feedback */
+;   345             UA_v_SendChar (ui8_PageCounter);
+	MOV	R16,R25
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   346 
+;   347             /*~I:28*/
+;   348             /* all pages done ? */
+;   349             if (ui8_PageCounter++ == (uint8_t)(MA_ui16_PAGES_TO_WRITE - 1))
+	MOV	R16,R25
+	MOV	R25,R16
+	INC	R25
+	CPI	R16,251
+	BRNE	??main_15
+;   350             /*~-1*/
+;   351             {
+;   352                /*~T*/
+;   353                /* change state */
+;   354                ui8_State = MA_ui8_CHECK_PRG;
+	LDI	R16,4
+	RJMP	??main_2
+;   355 
+;   356             /*~-1*/
+;   357             }
+;   358             /*~O:I28*/
+;   359             /*~-2*/
+;   360             else
+;   361             {
+;   362                /*~T*/
+;   363                /* change state */
+;   364                ui8_State = MA_ui8_READ_PAGE;
+??main_15:
+	LDI	R16,2
+	RJMP	??main_2
+;   365 
+;   366             /*~-1*/
+;   367             }
+;   368             /*~E:I28*/
+;   369             /*~T*/
+;   370             /* break */
+;   371             break;
+;   372          /*~-1*/
+;   373          }
+;   374          /*~E:F27*/
+;   375          /*~E:A26*/
+;   376          /*~A:29*/
+;   377          /*~+:Check programming*/
+;   378          /*~F:30*/
+;   379          /* check programming */
+;   380          case MA_ui8_CHECK_PRG:
+;   381          /*~-1*/
+;   382          {
+;   383             /*~T*/
+;   384             /* init calculated checksum */
+;   385             ui16_CChecksum = 0;
+??main_9:
+	LDI	R18,0
+	LDI	R19,0
+;   386 
+;   387             /* init page counter */
+;   388             ui8_PageCounter = 0;
+	LDI	R25,0
+;   389 
+;   390             /*~U:31*/
+;   391             /*~-2*/
+;   392             do
+;   393             {
+;   394                /*~T*/
+;   395                /* init counter */
+;   396                ui8_ByteCounter = 0;
+??main_16:
+	LDI	R24,0
+;   397 
+;   398                /*~U:32*/
+;   399                /*~-2*/
+;   400                do
+;   401                {
+;   402                   /*~T*/
+;   403                   /* update calculated checksum */
+;   404                   ui16_CChecksum += *(__flash  uint8_t *)(((uint16_t)ui8_PageCounter << 8) + ui8_ByteCounter); 
+??main_17:
+	MOV	R17,R25
+	LDI	R16,0
+	MOV	R30,R24
+	LDI	R31,0
+	ADD	R30,R16
+	ADC	R31,R17
+	LPM	R16,Z
+	LDI	R17,0
+	ADD	R18,R16
+	ADC	R19,R17
+;   405                /*~-1*/
+;   406                }
+;   407                /*~O:U32*/
+;   408                while (ui8_ByteCounter++ < (uint8_t)(MA_ui16_PAGE_SIZE - 1)); /* loop */
+	MOV	R16,R24
+	MOV	R24,R16
+	INC	R24
+	CPI	R16,255
+	BRCS	??main_17
+;   409                /*~E:U32*/
+;   410             /*~-1*/
+;   411             }
+;   412             /*~O:U31*/
+;   413             while (ui8_PageCounter++ < (uint8_t)(MA_ui16_PAGES_TO_WRITE - 1)); /* loop */
+	MOV	R16,R25
+	MOV	R25,R16
+	INC	R25
+	CPI	R16,251
+	BRCS	??main_16
+;   414             /*~E:U31*/
+;   415             /*~I:33*/
+;   416             /* calculated and expected are the same ? */
+;   417             if (ui16_CChecksum == ui16_EChecksum)
+	CP	R18,R26
+	CPC	R19,R27
+	BRNE	??main_18
+;   418             /*~-1*/
+;   419             {
+;   420                /*~T*/
+;   421                /* send feedback */
+;   422                UA_v_SendChar (MA_ui8_POSITIVE_ACKN);
+	LDI	R16,85
+	LDI	R17,0
+	CALL	UA_v_SendChar
+	RJMP	??main_19
+;   423 
+;   424             /*~-1*/
+;   425             }
+;   426             /*~O:I33*/
+;   427             /*~-2*/
+;   428             else
+;   429             {
+;   430                /*~T*/
+;   431                /* send feedback */
+;   432                UA_v_SendChar (MA_ui8_NEGATIVE_ACKN);
+??main_18:
+	LDI	R16,170
+	LDI	R17,0
+	CALL	UA_v_SendChar
+;   433 
+;   434             /*~-1*/
+;   435             }
+;   436             /*~E:I33*/
+;   437             /*~T*/
+;   438             /* change state */
+;   439             ui8_State = MA_ui8_END;
+??main_19:
+	LDI	R16,10
+;   440 
+;   441             /*~T*/
+;   442             /* break */
+;   443             break;
+	RJMP	??main_2
+;   444          /*~-1*/
+;   445          }
+;   446          /*~E:F30*/
+;   447          /*~E:A29*/
+;   448          /*~O:C13*/
+;   449          /*~-2*/
+;   450          default:
+;   451          {
+;   452             /*~T*/
+;   453             /* MA_ui8_END */
+;   454             /* flash sequence complete */
+;   455 
+;   456          /*~-1*/
+;   457          }
+;   458       /*~-1*/
+;   459       }
+;   460       /*~E:C13*/
+;   461    /*~-1*/
+;   462    }
+;   463    /*~O:U12*/
+;   464    while (TRUE); /* endless loop */
+;   465    /*~E:U12*/
+;   466 /*~-1*/
+;   467 }
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01cH
+__?EECR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01dH
+__?EEDR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01eH
+__?EEARL:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01fH
+__?EEARH:
+
+        END
+;   468 /*~E:F10*/
+;   469 /*~E:A9*/
+; 
+;      1 byte  in segment ABSOLUTE
+;    356 bytes in segment CODE
+; 
+;    356 bytes of CODE memory
+;      0 bytes of DATA memory (+ 1 byte shared)
+;
+;Errors: none
+;Warnings: none

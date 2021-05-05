@@ -1,0 +1,112 @@
+//    iar-co-avr-v6.lnt
+//    IAR AVR v6 compiler settings.
+
+
+//  MODIFY to point to your IAR Embedded Workbench installation
+
+
+//-i"C:\Program Files (x86)\IAR Systems\Embedded Workbench AVR 6.10.2\avr\inc\clib" // To be used with CLIB
+//-i"C:\Program Files (x86)\IAR Systems\Embedded Workbench AVR 6.10.2\avr\inc\dlib\c" // To be used with DLIB
+//+libdir("C:\Program Files (x86)\IAR Systems\Embedded Workbench AVR 6.10.2\avr\inc")
+//+libdir("C:\Program Files (x86)\IAR Systems\Embedded Workbench AVR 6.10.2\avr\inc\clib") // To be used with CLIB
+//+libdir("C:\Program Files (x86)\IAR Systems\Embedded Workbench AVR 6.10.2\avr\inc\dlib\c") // To be used with DLIB
+
+// MODIFY and ADD your project include paths here
+
+
+// EWAVR - char is unsigned char
++fcu
++fsu
+
+
+// 
+//    EWAVR Size of Scalars
+// 
+-si2
+-sl4
+-sp2
+-sf4
+-sd4
+
+// 
+//    EWAVR extended keywords
+// 
+-d__eeprom=          // Controls the storage of data objects in code memory space
+-d__ext_io=          // Controls the storage of data objects in I/O memory space. Supports I/O instructions; used for SFRs
+-d__far=             // Controls the storage of data objects in data memory space
+-d__farflash=        // Controls the storage of data objects in code memory space
+-d__farfunc=         // Controls the storage of functions in code memory space
+-d__flash=           // Controls the storage of data objects in code memory space
+-d__generic=         // Declares a generic pointer
+-d__huge=            // Controls the storage of data objects in data memory space
+-d__hugeflash=       // Controls the storage of data objects in code memory space
+-d__interrupt=       // Supports interrupt functions
+-d__io=              // Controls the storage of data objects in I/O memory space. Supports I/O instructions; used for SFRs
+-d__monitor=         // Supports atomic execution of a function
+-d__near=            // Controls the storage of data objects in data memory space
+-d__nearfunc=        // Controls the storage of functions in code memory space
+-d__nested=          // Implements a nested interrupt
+-d__no_runtime_init= // Declares initialized variables that are not initialized at runtime.
+-d__raw=             // Prevents saving used registers in interrupt functions
+-d__regvar=          // Places a data object in a register
+-d__tiny=            // Controls the storage of data objects in data memory space
+-d__tinyflash=       // Controls the storage of data objects in code memory space
+-d__version_1=       // Specifies the old calling convention; available for backward compatibility
+-d__no_init=         // Introduced CrZa
+
+
+
+// MODIFY
+// for problems with internal compiler library files: ichooser, iutility and xmemory...etc..
+// ------------------------------------------------------------------------------------------
+-elib(19)           // Usually about stray semicolons
+-elib(1076)         // Anonymous union assumed to be 'static'"
+-elibsym(1512)      // base class destructor is non-virtual
+-elib(46)           // For bitfields with non-int fields
+
+
+
+
+
+// 
+//    EWAVR extended defines
+// 
+//-header(C:\lint\lnt\iar-ewavr-predefined_macros_for_PC-lint.h)
+
+
+
+
+//  ***************************************************************************
+//  
+//  IAR Systems
+//  
+//  File name:  iar-co-avr-v6.lnt
+//  
+//  Revision:   0.3 (alpha)
+//  
+//  Modified:   2011-11-03
+//  
+//  ***************************************************************************
+
+//options C. Zaslo
+
+-i"C:\IARSystems\avr\inc\"
+-i"D:\Projects\FlashLoader_AT644\Source\"
+
+-e725               // suppress warning about indentation
+-sb8	            // 8 bit in byte
+-sc1	            // char are 1 byte
+-ss2                // short are 2 bytes
+-elib(430)          // generated intensivelly by AVR device files 
+-elib(657)	    // generated intensivelly by AVR device files 
+-d__intrinsic=      // intrinsec functions 
++linebuf            // for long input lines
++linebuf
++linebuf
++linebuf
+
+
+-D__IAR_SYSTEMS_ICC__=4
+-D__TID__=((90 << 8) | ((3) << 4)))
+-D__ICCAVR__=1
+-D__MEMORY_MODEL__=2

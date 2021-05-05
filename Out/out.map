@@ -1,0 +1,156 @@
+################################################################################
+#                                                                              #
+#      IAR Universal Linker V4.53O/386                                         #
+#                                                                              #
+#           Link time     =  05/May/2021  11:04:56                             #
+#           Target CPU    =  A90                                               #
+#           List file     =  D:\Projects\FlashLoader_AT644\Out\out.map         #
+#           Output file 1 =  D:\Projects\FlashLoader_AT644\Out\flat644.hex     #
+#                            Format: intel-standard, variant: -y(CODE)         #
+#           Output file 2 =  D:\Projects\FlashLoader_AT644\Out\flat644.a90     #
+#                            Format: intel-standard, variant: -y(XDATA)        #
+#           Command line  =  C:\IARSystems\avr\lib\dl3s-sf.r90                 #
+#                            D:\Projects\FlashLoader_AT644\Out\fldr.r90        #
+#                            D:\Projects\FlashLoader_AT644\Out\Global.r90      #
+#                            D:\Projects\FlashLoader_AT644\Out\Io.r90          #
+#                            D:\Projects\FlashLoader_AT644\Out\Main.r90        #
+#                            D:\Projects\FlashLoader_AT644\Out\Uart.r90 -f     #
+#                            D:\Projects\FlashLoader_AT644\Link\lnkm644s.xcl   #
+#                            (-D_..X_INTVEC_SIZE=70 -D_..X_FLASH_END=FFFF      #
+#                            -D_..X_FLASH_TEND=FF                              #
+#                            -D_..X_FLASH_NEND=_..X_FLASH_END                  #
+#                            -D_..X_SRAM_BASE=100 -D_..X_SRAM_END=10FF         #
+#                            -D_..X_SRAM_TBASE=0 -D_..X_SRAM_TSIZE=0           #
+#                            -D_..X_EEPROM_START=0 -D_..X_EEPROM_END=7FF       #
+#                            -D_..X_CSTACK_SIZE=500 -D_..X_RSTACK_SIZE=200     #
+#                            -D_..X_HEAP_SIZE=40 -D_..X_NEAR_HEAP_SIZE=40      #
+#                            -ca90 -Z(CODE)INTVEC=0-(_..X_INTVEC_SIZE-1)       #
+#                            -H1895 -h(CODE)0-_..X_INTVEC_SIZE                 #
+#                            -D_..X_FLASH_BASE=FC00                            #
+#                            -Z(CODE)TINY_F=_..X_FLASH_BASE-_..X_FLASH_TEND    #
+#                            -Z(CODE)NEAR_F=_..X_FLASH_BASE-_..X_FLASH_NEND    #
+#                            -Z(CODE)SWITCH=_..X_FLASH_BASE-_..X_FLASH_NEND    #
+#                            -Z(CODE)DIFUNCT=_..X_FLASH_BASE-_..X_FLASH_NEND   #
+#                            -Z(CODE)CODE=_..X_FLASH_BASE-_..X_FLASH_END       #
+#                            -Z(CODE)INITTAB=_..X_FLASH_BASE-_..X_FLASH_END    #
+#                            -Z(CODE)TINY_ID=_..X_FLASH_BASE-_..X_FLASH_END    #
+#                            -Z(CODE)NEAR_ID=_..X_FLASH_BASE-_..X_FLASH_END    #
+#                            -Z(CODE)CHECKSUM#_..X_FLASH_END                   #
+#                            -Z(DATA)NEAR_I,NEAR_Z,NEAR_N=_..X_SRAM_BASE-_..X_ #
+#                            SRAM_END                                          #
+#                            -Z(DATA)RSTACK+_..X_RSTACK_SIZE=_..X_SRAM_BASE-_. #
+#                            .X_SRAM_END                                       #
+#                            -Z(DATA)CSTACK+_..X_CSTACK_SIZE=_..X_SRAM_BASE-_. #
+#                            .X_SRAM_END                                       #
+#                            -Z(DATA)HEAP+_..X_HEAP_SIZE=_..X_SRAM_BASE-_..X_S #
+#                            RAM_END                                           #
+#                            -Z(DATA)IOSTREAM_N#_..X_SRAM_BASE-_..X_SRAM_END   #
+#                            -Z(DATA)NEAR_HEAP+_..X_NEAR_HEAP_SIZE=_..X_SRAM_B #
+#                            ASE-_..X_SRAM_END                                 #
+#                            -Z(XDATA)EEPROM_I,EEPROM_N=_..X_EEPROM_START-_..X #
+#                            _EEPROM_END                                       #
+#                            -w29 -y(CODE) -Ointel-standard,(XDATA)) -J2,sum   #
+#                            -FINTEL-STANDARD -l                               #
+#                            D:\Projects\FlashLoader_AT644\Out\out.map -xs     #
+#                            -o                                                #
+#                            D:\Projects\FlashLoader_AT644\Out\flat644.hex     #
+#                                                                              #
+#                        Copyright 1987-2002 IAR Systems. All rights reserved. #
+################################################################################
+
+
+
+
+
+                ****************************************
+                *                                      *
+                *           CROSS REFERENCE            *
+                *                                      *
+                ****************************************
+
+                  There are no program entries.
+
+
+
+
+                ****************************************
+                *                                      *
+                *            RUNTIME MODEL             *
+                *                                      *
+                ****************************************
+
+  R10             = REG
+  R11             = REG
+  R4              = REG
+  R5              = REG
+  R6              = REG
+  R7              = REG
+  R8              = REG
+  R9              = REG
+  __64bit_doubles = disabled
+  __cpu           = 3
+  __cpu_name      = AT90Mega16
+  __enhanced_core = enabled
+  __has_elpm      = false
+  __memory_model  = 2
+  __rt_version    = 2.30
+
+
+
+                ****************************************
+                *                                      *
+                *      SEGMENTS IN ADDRESS ORDER       *
+                *                                      *
+                ****************************************
+
+
+SEGMENT              SPACE   START ADDRESS    END ADDRESS      SIZE  TYPE  ALIGN
+=======              =====   =============    ===========      ====  ====  =====
+INTVEC               CODE         00000000 - 00000003             4   com    1
+?FILL1               CODE         00000004 - 00000070            6D   rel    0
+CODE                 CODE         0000FC00 - 0000FF23           324   rel    1
+CHECKSUM             CODE         0000FFFE - 0000FFFF             2   rel    0
+ABSOLUTE (ABS)       DATA              0000001C                       rel    0
+                     DATA              0000001D                     
+                     DATA              0000001E                     
+                     DATA              0000001F                     
+                     DATA         00000029 - 00000029             1 
+                     DATA         0000002A - 0000002A             1 
+                     DATA         0000002B - 0000002B             1 
+                     DATA         00000055 - 00000055             1 
+                     DATA         000000C0 - 000000C0             1 
+                     DATA         000000C1 - 000000C1             1 
+                     DATA         000000C2 - 000000C2             1 
+                     DATA         000000C4 - 000000C4             1 
+                     DATA         000000C5 - 000000C5             1 
+                     DATA         000000C6 - 000000C6             1 
+NEAR_I               DATA              00000100                       dse    0
+NEAR_Z               DATA              00000100                       dse    0
+NEAR_N               DATA         00000100 - 000001FF           100   rel    0
+RSTACK               DATA         00000200 - 000003FF           200   dse    0
+CSTACK               DATA         00000400 - 000008FF           500   dse    0
+
+
+                ****************************************
+                *                                      *
+                *     CHECKSUMMED AREAS, IN ORDER      *
+                *                                      *
+                ****************************************
+
+00000000 - 00000070 in CODE memory
+0000FC00 - 0000FF23 in CODE memory
+
+Checksum = 91cf
+
+                ****************************************
+                *                                      *
+                *        END OF CROSS REFERENCE        *
+                *                                      *
+                ****************************************
+
+   810 bytes of CODE memory (109 range fill)
+ 2 058 bytes of DATA memory
+
+Errors: none
+Warnings: none
+
