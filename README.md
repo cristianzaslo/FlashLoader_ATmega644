@@ -1,4 +1,4 @@
-#***** Flashloader for ATMEAGA 644 microcontroller *****
+# ***** Flashloader for ATMEAGA 644 microcontroller *****
 # (c)2021 Cristian Zaslo, cristianzaslo@gmail.com
 
 Development toolchain:
