@@ -3,25 +3,25 @@
 
 Development toolchain:
 ---------------------
--> Compiler/Assembler:  IAR Atmel AVR v2.28A/WIN
--> Code editor:         X32 v3.0
+Compiler/Assembler:  IAR Atmel AVR v2.28A/WIN
+Code editor:         X32 v3.0
 
 Programming toolchain:
 ---------------------
--> target with ATMEGA 644 ucontroller
--> serial programmer to write the flashloader
--> RS232-TTL converter (e.g. http://picprojects.org.uk/projects/simpleSIO/ssio.htm)
--> Windows 7/10 environment
--> FlashTool_AT644 or an equivalent programming tool to write the main application
+target with ATMEGA 644 ucontroller
+serial programmer to write the flashloader
+RS232-TTL converter (e.g. http://picprojects.org.uk/projects/simpleSIO/ssio.htm)
+Windows 7/10 environment
+FlashTool_AT644 or an equivalent programming tool to write the main application
 
 Installation:
 ------------
--> program the flashloader (flat644.hex) using a JATG interface or serial programmer (e.g. Atmel-ICE)
--> connect PD2 to GND; this step activates the flashloader upon reset 
--> connect PDO (RXD0), PD1 (TXD0) and GND pins to RS232-TTL converter
--> connect RS232-TTL converter to host PC
--> run FlashTool_AT644 application and select the *.hex file application to download
--> reset the target; an 0x55 char will be sent by target and upon reception the download sequence is automatically started
+program the flashloader (flat644.hex) using a JATG interface or serial programmer (e.g. Atmel-ICE)
+connect PD2 to GND; this step activates the flashloader upon reset 
+connect PDO (RXD0), PD1 (TXD0) and GND pins to RS232-TTL converter
+connect RS232-TTL converter to host PC
+run FlashTool_AT644 application and select the HEX file application to download
+reset the target; an 0x55 char will be sent by target and upon reception the download sequence is automatically started
 
 Data exchange sequence diagram:
 ------------------------------
