@@ -129,14 +129,8 @@ IO_v_Init:
 	OUT	0x35,R16
 	SBI	0x0B,0x02
 	CBI	0x0A,0x02
-;    84 
-;    85    /* configure toggle pin */
-;    86    IO_v_SET_PIN_DIR (IO_f_PORT_TOG, OUTPUT);
-	SBI	0x0A,0x03
-;    87    IO_v_SET_PIN_LATCH (IO_f_PORT_TOG, HIGH);
-	SBI	0x0B,0x03
-;    88 /*~-1*/
-;    89 }
+;    84 /*~-1*/
+;    85 }
 	RET
 
         ASEGN ABSOLUTE:DATA:NOROOT,01cH
@@ -152,13 +146,13 @@ __?EEARL:
 __?EEARH:
 
         END
-;    90 /*~E:F10*/
-;    91 /*~E:A9*/
+;    86 /*~E:F10*/
+;    87 /*~E:A9*/
 ; 
 ;      3 bytes in segment ABSOLUTE
-;     18 bytes in segment CODE
+;     14 bytes in segment CODE
 ; 
-;     18 bytes of CODE memory
+;     14 bytes of CODE memory
 ;      0 bytes of DATA memory (+ 3 bytes shared)
 ;
 ;Errors: none

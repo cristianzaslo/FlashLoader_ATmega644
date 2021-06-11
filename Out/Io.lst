@@ -1,6 +1,6 @@
 ##############################################################################
 #                                                                            #
-# IAR Atmel AVR C/EC++ Compiler V2.28A/WIN             05/May/2021  11:04:54 #
+# IAR Atmel AVR C/EC++ Compiler V2.28A/WIN             11/Jun/2021  18:14:12 #
 # Copyright 1996-2002 IAR Systems. All rights reserved.                      #
 #                                                                            #
 #    Source file  =  D:\Projects\FlashLoader_AT644\Source\Io.c               #
@@ -125,17 +125,11 @@
    \   00000006   BF05                       OUT     0x35,R16
    \   00000008   9A5A                       SBI     0x0B,0x02
    \   0000000A   9852                       CBI     0x0A,0x02
-     84          
-     85             /* configure toggle pin */
-     86             IO_v_SET_PIN_DIR (IO_f_PORT_TOG, OUTPUT);
-   \   0000000C   9A53                       SBI     0x0A,0x03
-     87             IO_v_SET_PIN_LATCH (IO_f_PORT_TOG, HIGH);
-   \   0000000E   9A5B                       SBI     0x0B,0x03
-     88          /*~-1*/
-     89          }
-   \   00000010   9508                       RET
-     90          /*~E:F10*/
-     91          /*~E:A9*/
+     84          /*~-1*/
+     85          }
+   \   0000000C   9508                       RET
+     86          /*~E:F10*/
+     87          /*~E:A9*/
 
    Maximum stack usage in bytes:
 
@@ -145,9 +139,9 @@
 
  
       3 bytes in segment ABSOLUTE
-     18 bytes in segment CODE
+     14 bytes in segment CODE
  
-     18 bytes of CODE memory
+     14 bytes of CODE memory
       0 bytes of DATA memory (+ 3 bytes shared)
 
 Errors: none

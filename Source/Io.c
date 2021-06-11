@@ -81,10 +81,6 @@ void IO_v_Init (void)
    /* configure FLI pin */
    IO_v_SET_PIN_DIR (IO_f_PORT_FLI, INPUT);
    IO_v_SET_PIN_PUL (IO_f_PORT_FLI);
-
-   /* configure toggle pin */
-   IO_v_SET_PIN_DIR (IO_f_PORT_TOG, OUTPUT);
-   IO_v_SET_PIN_LATCH (IO_f_PORT_TOG, HIGH);
 /*~-1*/
 }
 /*~E:F10*/
