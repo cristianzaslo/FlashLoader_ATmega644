@@ -50,7 +50,7 @@
 /*~+:Variables*/
 /*~T*/
 /* page to write */
-extern __no_init uint8_t FL_aui8_FlashPage [FL_ui8_PAGESIZE];
+extern __no_init uint8_t FL_aui8_FlashPage [2 * FL_ui8_PAGESIZE];
 
 /*~E:A5*/
 /*~A:6*/

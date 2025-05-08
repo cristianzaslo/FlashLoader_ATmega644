@@ -78,7 +78,7 @@ RWWSRE EQU 0x10
 
 ; unsigned char __near FL_aui8_FlashPage[256];
 FL_aui8_FlashPage:
-	DS 256
+	DS 2 * PAGESIZE
 
 
         RSEG CODE:CODE:NOROOT(1)
